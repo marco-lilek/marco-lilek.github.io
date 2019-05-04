@@ -1,0 +1,41 @@
+<html>
+<head>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.449.0.min.js"></script>
+<script type="text/javascript">
+
+ACTIVATE = 'ACTIVATE'
+
+function changeServerState(newState) {
+  AWS.config.update({
+    region: 'us-west-2',
+    accessKeyId: 'AKIAXAFHHCF6TJEA5FUE',
+    secretAccessKey: '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'
+  });
+
+  var params = {
+    Message: newState, /* required */
+    TopicArn: 'arn:aws:sns:us-west-2:481387024765:activate-minecraft-server'
+  };
+
+  var sns= new AWS.SNS({apiVersion: '2010-03-31'});
+
+  var publishTextPromise = sns.publish(params).promise();
+
+  publishTextPromise.then(function(data) {
+    document.getElementById("result").innerHTML = "<b>Success!</b> You might need to wait a bit for the server to spin up";
+    console.log("messageId: " + data.MessageId);
+  }).catch(function(err) {
+      console.error(err, err.stack);
+      document.getElementById("error").innerHTML = "<b>Error</b>: " + err;
+  });
+}
+
+</script>
+</head>
+<body>
+Activate the minecraft server
+<input id="activateServer" type="button" value="activate" onclick="changeServerState(ACTIVATE);" />
+<p id="result"></p>
+<p id="error" style="color: red"></p>
+</body>
+</html>
